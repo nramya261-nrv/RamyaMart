@@ -1,0 +1,6 @@
+com\ramyamart\Product.class
+com\ramyamart\User.class
+com\ramyamart\RamyaMartApplication.class
+com\ramyamart\UserRepository.class
+com\ramyamart\RamyaMartController.class
+com\ramyamart\ProductRepository.class

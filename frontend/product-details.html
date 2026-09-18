@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Product Details - Ramya Mart</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+            background: #f4f6f8;
+            color: #222;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 18px 40px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 16px;
+        }
+
+
+        nav a:hover {
+            color: #60a5fa;
+        }
+
+
+        /* =========================
+           MAIN CONTAINER
+        ========================= */
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 40px auto;
+        }
+
+
+        /* =========================
+           BACK BUTTON
+        ========================= */
+
+        .back-btn {
+            display: inline-block;
+
+            margin-bottom: 25px;
+
+            text-decoration: none;
+
+            color: #2563eb;
+
+            font-size: 20px;
+
+            font-weight: bold;
+        }
+
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+
+        /* =========================
+           PRODUCT DETAILS
+        ========================= */
+
+        .product-details {
+
+            background: white;
+
+            padding: 35px;
+
+            border-radius: 15px;
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 40px;
+
+            box-shadow:
+                0 4px 15px
+                rgba(0, 0, 0, 0.10);
+        }
+
+
+        /* =========================
+           PRODUCT IMAGE
+        ========================= */
+
+        .product-image {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+
+        .product-image img {
+
+            width: 100%;
+
+            max-height: 450px;
+
+            object-fit: contain;
+
+            border-radius: 12px;
+        }
+
+
+        /* =========================
+           PRODUCT INFO
+        ========================= */
+
+        .product-info h1 {
+
+            font-size: 38px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .brand {
+
+            color: #666;
+
+            font-size: 18px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .rating {
+
+            margin: 15px 0;
+
+            font-size: 22px;
+        }
+
+
+        .price {
+
+            font-size: 32px;
+
+            font-weight: bold;
+
+            margin: 20px 0;
+
+            color: #111827;
+        }
+
+
+        .description {
+
+            line-height: 1.7;
+
+            color: #555;
+
+            font-size: 18px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .stock {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            margin-bottom: 25px;
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        button {
+
+            padding: 14px 24px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 16px;
+
+            margin-right: 10px;
+
+            margin-bottom: 10px;
+        }
+
+
+        button:hover {
+
+            opacity: 0.9;
+
+            transform: translateY(-1px);
+        }
+
+
+        .cart-btn {
+
+            background: #f59e0b;
+
+            color: white;
+        }
+
+
+        .buy-btn {
+
+            background: #16a34a;
+
+            color: white;
+        }
+
+
+        .wishlist-btn {
+
+            background: #e91e63;
+
+            color: white;
+        }
+
+
+        /* =========================
+           DELIVERY BOX
+        ========================= */
+
+        .delivery-box {
+
+            margin-top: 25px;
+
+            padding: 18px;
+
+            background: #f8fafc;
+
+            border-radius: 10px;
+
+            border: 1px solid #e5e7eb;
+        }
+
+
+        .delivery-box p {
+
+            margin: 8px 0;
+
+            color: #444;
+        }
+
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        .loading {
+
+            text-align: center;
+
+            font-size: 22px;
+
+            padding: 50px;
+        }
+
+
+        /* =========================
+           ERROR
+        ========================= */
+
+        .error {
+
+            text-align: center;
+
+            color: red;
+
+            padding: 50px;
+
+            font-size: 20px;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .product-details {
+
+                grid-template-columns: 1fr;
+
+                padding: 20px;
+            }
+
+
+            header {
+
+                padding: 15px;
+
+                flex-direction: column;
+
+                gap: 15px;
+            }
+
+
+            nav a {
+
+                margin-left: 8px;
+
+                font-size: 14px;
+            }
+
+
+            .product-info h1 {
+
+                font-size: 28px;
+            }
+
+
+            .price {
+
+                font-size: 26px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <header>
+
+        <div class="logo">
+            🛒 Ramya Mart
+        </div>
+
+
+        <nav>
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="orders.html">
+                Orders
+            </a>
+
+            <a href="buyer.html">
+                Buyer
+            </a>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- =========================
+         MAIN
+    ========================= -->
+
+    <div class="container">
+
+
+        <a
+            href="index.html"
+            class="back-btn"
+        >
+            ← Back to Products
+        </a>
+
+
+        <div id="productContainer">
+
+            <div class="loading">
+                Loading product...
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <script>
+
+
+        /* =========================
+           PRODUCT IMAGES
+        ========================= */
+
+        const productImages = {
+
+            "HP Laptop":
+                "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=700&q=80",
+
+            "Dell Laptop":
+                "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=700&q=80",
+
+            "Lenovo Laptop":
+                "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=700&q=80",
+
+            "ASUS Laptop":
+                "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=700&q=80",
+
+            "Samsung Galaxy":
+                "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=700&q=80",
+
+            "OnePlus Mobile":
+                "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=700&q=80",
+
+            "Wireless Headphones":
+                "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=700&q=80",
+
+            "Wireless Mouse":
+                "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=700&q=80"
+
+        };
+
+
+
+        /* =========================
+           VARIABLES
+        ========================= */
+
+        let selectedProduct = null;
+
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const productId =
+            params.get("id");
+
+
+
+        /* =========================
+           LOAD PRODUCT
+        ========================= */
+
+        async function loadProduct() {
+
+            const container =
+                document.getElementById(
+                    "productContainer"
+                );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "http://localhost:8080/api/products/"
+                        + productId
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Product not found"
+                    );
+
+                }
+
+
+                selectedProduct =
+                    await response.json();
+
+
+                const image =
+                    productImages[
+                        selectedProduct.name
+                    ]
+                    ||
+                    "https://via.placeholder.com/700x500?text=Ramya+Mart";
+
+
+                container.innerHTML = `
+
+                    <div class="product-details">
+
+
+                        <!-- PRODUCT IMAGE -->
+
+                        <div class="product-image">
+
+                            <img
+                                src="${image}"
+                                alt="${selectedProduct.name}"
+                            >
+
+                        </div>
+
+
+
+                        <!-- PRODUCT INFORMATION -->
+
+                        <div class="product-info">
+
+
+                            <h1>
+                                ${selectedProduct.name}
+                            </h1>
+
+
+                            <div class="brand">
+
+                                Brand:
+                                ${selectedProduct.brand || "N/A"}
+
+                            </div>
+
+
+                            <div class="rating">
+
+                                ⭐⭐⭐⭐⭐
+
+                            </div>
+
+
+                            <div class="price">
+
+                                ₹${Number(
+                                    selectedProduct.price
+                                ).toLocaleString("en-IN")}
+
+                            </div>
+
+
+                            <div class="description">
+
+                                ${
+                                    selectedProduct.description
+                                    ||
+                                    "No description available."
+                                }
+
+                            </div>
+
+
+                            <div class="stock">
+
+                                📦 Stock:
+                                ${selectedProduct.stock}
+
+                            </div>
+
+
+
+                            <!-- ADD TO CART -->
+
+                            <button
+                                class="cart-btn"
+                                onclick="addToCart()"
+                            >
+
+                                🛒 Add to Cart
+
+                            </button>
+
+
+
+                            <!-- BUY NOW -->
+
+                            <button
+                                class="buy-btn"
+                                onclick="buyNow()"
+                            >
+
+                                🛍️ Buy Now
+
+                            </button>
+
+
+
+                            <!-- WISHLIST -->
+
+                            <button
+                                class="wishlist-btn"
+                                id="wishlistButton"
+                                onclick="addToWishlist()"
+                            >
+
+                                ❤️ Add to Wishlist
+
+                            </button>
+
+
+
+                            <!-- DELIVERY INFORMATION -->
+
+                            <div class="delivery-box">
+
+                                <p>
+                                    🚚 <strong>Free Delivery</strong>
+                                    on selected products
+                                </p>
+
+                                <p>
+                                    🔒 Secure payment
+                                </p>
+
+                                <p>
+                                    ↩️ Easy returns
+                                </p>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                `;
+
+
+                updateWishlistButton();
+
+            }
+
+
+            catch (error) {
+
+                console.error(error);
+
+
+                container.innerHTML = `
+
+                    <div class="error">
+
+                        ❌ Product could not be loaded.
+
+                        <br><br>
+
+                        Please make sure backend is running.
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+
+        /* =========================
+           ADD TO CART
+        ========================= */
+
+        function addToCart() {
+
+            if (!selectedProduct) {
+
+                return;
+
+            }
+
+
+            let cart = [];
+
+
+            try {
+
+                const savedCart =
+                    localStorage.getItem(
+                        "ramyaCart"
+                    );
+
+
+                if (savedCart) {
+
+                    cart =
+                        JSON.parse(
+                            savedCart
+                        );
+
+                }
+
+            }
+
+            catch (error) {
+
+                cart = [];
+
+            }
+
+
+            const existingProduct =
+                cart.find(
+                    item =>
+                        item.id ===
+                        selectedProduct.id
+                );
+
+
+            if (existingProduct) {
+
+                existingProduct.quantity++;
+
+            }
+
+            else {
+
+                cart.push({
+
+                    id:
+                        selectedProduct.id,
+
+                    name:
+                        selectedProduct.name,
+
+                    price:
+                        Number(
+                            selectedProduct.price
+                        ),
+
+                    quantity: 1
+
+                });
+
+            }
+
+
+            localStorage.setItem(
+
+                "ramyaCart",
+
+                JSON.stringify(cart)
+
+            );
+
+
+            alert(
+
+                selectedProduct.name
+                +
+                " added to cart! 🛒"
+
+            );
+
+        }
+
+
+
+        /* =========================
+           BUY NOW
+        ========================= */
+
+        function buyNow() {
+
+            if (!selectedProduct) {
+
+                return;
+
+            }
+
+
+            const cart = [
+
+                {
+
+                    id:
+                        selectedProduct.id,
+
+                    name:
+                        selectedProduct.name,
+
+                    price:
+                        Number(
+                            selectedProduct.price
+                        ),
+
+                    quantity: 1
+
+                }
+
+            ];
+
+
+            localStorage.setItem(
+
+                "ramyaCart",
+
+                JSON.stringify(cart)
+
+            );
+
+
+            window.location.href =
+                "index.html#cart";
+
+        }
+
+
+
+        /* =========================
+           ADD TO WISHLIST
+        ========================= */
+
+        function addToWishlist() {
+
+            if (!selectedProduct) {
+
+                return;
+
+            }
+
+
+            let wishlist = [];
+
+
+            try {
+
+                const savedWishlist =
+                    localStorage.getItem(
+                        "ramyaWishlist"
+                    );
+
+
+                if (savedWishlist) {
+
+                    wishlist =
+                        JSON.parse(
+                            savedWishlist
+                        );
+
+                }
+
+            }
+
+            catch (error) {
+
+                wishlist = [];
+
+            }
+
+
+
+            /* CHECK WHETHER ALREADY EXISTS */
+
+            const alreadyExists =
+                wishlist.some(
+                    item =>
+                        item.id ===
+                        selectedProduct.id
+                );
+
+
+
+            if (alreadyExists) {
+
+                alert(
+                    "❤️ This product is already in your Wishlist!"
+                );
+
+                return;
+
+            }
+
+
+
+            /* ADD PRODUCT */
+
+            wishlist.push({
+
+                id:
+                    selectedProduct.id,
+
+                name:
+                    selectedProduct.name,
+
+                price:
+                    Number(
+                        selectedProduct.price
+                    ),
+
+                brand:
+                    selectedProduct.brand,
+
+                description:
+                    selectedProduct.description
+
+            });
+
+
+
+            /* SAVE */
+
+            localStorage.setItem(
+
+                "ramyaWishlist",
+
+                JSON.stringify(wishlist)
+
+            );
+
+
+
+            /* CHANGE BUTTON */
+
+            updateWishlistButton();
+
+
+
+            alert(
+
+                "❤️ "
+                +
+                selectedProduct.name
+                +
+                " added to Wishlist!"
+
+            );
+
+        }
+
+
+
+        /* =========================
+           UPDATE WISHLIST BUTTON
+        ========================= */
+
+        function updateWishlistButton() {
+
+            if (!selectedProduct) {
+
+                return;
+
+            }
+
+
+            const button =
+                document.getElementById(
+                    "wishlistButton"
+                );
+
+
+            if (!button) {
+
+                return;
+
+            }
+
+
+            let wishlist = [];
+
+
+            try {
+
+                const savedWishlist =
+                    localStorage.getItem(
+                        "ramyaWishlist"
+                    );
+
+
+                if (savedWishlist) {
+
+                    wishlist =
+                        JSON.parse(
+                            savedWishlist
+                        );
+
+                }
+
+            }
+
+            catch (error) {
+
+                wishlist = [];
+
+            }
+
+
+            const exists =
+                wishlist.some(
+                    item =>
+                        item.id ===
+                        selectedProduct.id
+                );
+
+
+            if (exists) {
+
+                button.innerHTML =
+                    "❤️ Added to Wishlist";
+
+            }
+
+            else {
+
+                button.innerHTML =
+                    "❤️ Add to Wishlist";
+
+            }
+
+        }
+
+
+
+        /* =========================
+           PRODUCT ID CHECK
+        ========================= */
+
+        if (!productId) {
+
+
+            document.getElementById(
+                "productContainer"
+            ).innerHTML = `
+
+                <div class="error">
+
+                    ❌ Product ID not found.
+
+                </div>
+
+            `;
+
+        }
+
+        else {
+
+            loadProduct();
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>

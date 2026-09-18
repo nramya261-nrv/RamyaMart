@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ramya Mart - Buyer Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <header>
+
+        <div class="logo">
+            🛍️ RAMYA MART
+        </div>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="index.html#products">Products</a>
+            <a href="index.html#cart">🛒 Cart</a>
+            <a href="#" onclick="viewOrders()">📦 My Orders</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </nav>
+
+    </header>
+
+
+    <!-- BUYER DASHBOARD -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <h1>Welcome, Buyer! 👋</h1>
+
+            <p>
+                Welcome to your Ramya Mart dashboard.
+            </p>
+
+            <a href="index.html#products" class="shop-btn">
+                Start Shopping
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- DASHBOARD OPTIONS -->
+
+    <section class="products">
+
+        <h2>Buyer Dashboard</h2>
+
+        <div class="product-container">
+
+            <!-- VIEW PRODUCTS -->
+
+            <div class="product-card">
+
+                <div class="product-image">
+                    🛍️
+                </div>
+
+                <h3>View Products</h3>
+
+                <p>
+                    Browse all available products.
+                </p>
+
+                <button onclick="window.location.href='index.html#products'">
+                    View Products
+                </button>
+
+            </div>
+
+
+            <!-- MY CART -->
+
+            <div class="product-card">
+
+                <div class="product-image">
+                    🛒
+                </div>
+
+                <h3>My Cart</h3>
+
+                <p>
+                    View the products added to your cart.
+                </p>
+
+                <button onclick="window.location.href='index.html#cart'">
+                    View Cart
+                </button>
+
+            </div>
+
+
+            <!-- MY ORDERS -->
+
+            <div class="product-card">
+
+                <div class="product-image">
+                    📦
+                </div>
+
+                <h3>My Orders</h3>
+
+                <p>
+                    View your previous orders.
+                </p>
+
+                <button onclick="viewOrders()">
+                    My Orders
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ORDERS SECTION -->
+
+    <section id="orders" class="cart-section">
+
+        <h2>📦 My Orders</h2>
+
+        <div id="orders-container">
+
+            <p>Click "My Orders" to view your orders.</p>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <h3>
+            🛍️ RAMYA MART
+        </h3>
+
+        <p>
+            Buyer Dashboard
+        </p>
+
+        <p>
+            © 2026 Ramya Mart. All Rights Reserved.
+        </p>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        // =========================
+        // VIEW ORDERS
+        // =========================
+
+        async function viewOrders() {
+
+            const ordersContainer =
+                document.getElementById("orders-container");
+
+            ordersContainer.innerHTML =
+                "<p>Loading your orders... ⏳</p>";
+
+            try {
+
+                const response =
+                    await fetch("http://localhost:8080/api/orders");
+
+                if (!response.ok) {
+
+                    throw new Error("Failed to load orders");
+
+                }
+
+                const orders = await response.json();
+
+
+                // No orders
+
+                if (orders.length === 0) {
+
+                    ordersContainer.innerHTML =
+                        "<p>You have no orders yet. 📦</p>";
+
+                    document.getElementById("orders")
+                        .scrollIntoView();
+
+                    return;
+                }
+
+
+                // Display orders
+
+                ordersContainer.innerHTML = "";
+
+
+                orders.forEach((order) => {
+
+                    const orderCard =
+                        document.createElement("div");
+
+                    orderCard.className = "product-card";
+
+                    orderCard.innerHTML = `
+
+                        <div class="product-image">
+                            📦
+                        </div>
+
+                        <h3>${order.productName}</h3>
+
+                        <p>
+                            Order ID: #${order.id}
+                        </p>
+
+                        <p>
+                            Quantity: ${order.quantity}
+                        </p>
+
+                        <p>
+                            Price: ₹${order.price.toLocaleString("en-IN")}
+                        </p>
+
+                        <p>
+                            Payment: ${order.paymentMethod}
+                        </p>
+
+                        <p>
+                            Delivery Address:
+                            ${order.address}
+                        </p>
+
+                        <h4>
+                            Status: ${order.status}
+                        </h4>
+
+                    `;
+
+                    ordersContainer.appendChild(orderCard);
+
+                });
+
+
+                // Scroll to orders
+
+                document.getElementById("orders")
+                    .scrollIntoView({
+                        behavior: "smooth"
+                    });
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                ordersContainer.innerHTML = `
+                    <p>
+                        Unable to load orders.
+                        Please make sure the backend is running.
+                    </p>
+                `;
+
+            }
+
+        }
+
+
+        // =========================
+        // LOGOUT
+        // =========================
+
+        function logout() {
+
+            alert("Logged out successfully!");
+
+            window.location.href =
+                "index.html#login";
+
+        }
+
+    </script>
+
+</body>
+
+</html>
