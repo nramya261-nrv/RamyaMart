@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Wishlist - Ramya Mart</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 18px 40px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        nav a:hover {
+            color: #60a5fa;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title h1 {
+            font-size: 32px;
+        }
+
+        .wishlist-container {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(250px, 1fr));
+
+            gap: 25px;
+        }
+
+        .wishlist-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .wishlist-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .wishlist-card h2 {
+            margin: 15px 0 8px;
+            font-size: 21px;
+        }
+
+        .brand {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 12px 0;
+        }
+
+        .description {
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        button {
+            border: none;
+            padding: 11px 15px;
+            border-radius: 7px;
+            cursor: pointer;
+            margin: 4px;
+            font-size: 14px;
+        }
+
+        .cart-btn {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .buy-btn {
+            background: #16a34a;
+            color: white;
+        }
+
+        .remove-btn {
+            background: #dc2626;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        .empty {
+            background: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 12px;
+        }
+
+        .empty h2 {
+            margin-bottom: 15px;
+        }
+
+        .home-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+        }
+
+        @media (max-width: 700px) {
+
+            header {
+                padding: 15px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav a {
+                margin-left: 8px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="logo">
+        🛒 Ramya Mart
+    </div>
+
+    <nav>
+
+        <a href="index.html">
+            Home
+        </a>
+
+        <a href="wishlist.html">
+            ❤️ Wishlist
+        </a>
+
+        <a href="orders.html">
+            Orders
+        </a>
+
+        <a href="buyer.html">
+            Buyer
+        </a>
+
+    </nav>
+
+</header>
+
+
+
+<div class="container">
+
+
+    <div class="title">
+
+        <h1>
+            ❤️ My Wishlist
+        </h1>
+
+        <p>
+            Products you saved for later
+        </p>
+
+    </div>
+
+
+    <div id="wishlistContainer">
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =========================
+   PRODUCT IMAGES
+========================= */
+
+const productImages = {
+
+    "HP Laptop":
+        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80",
+
+    "Dell Laptop":
+        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80",
+
+    "Lenovo Laptop":
+        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80",
+
+    "ASUS Laptop":
+        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80",
+
+    "Samsung Galaxy":
+        "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80",
+
+    "OnePlus Mobile":
+        "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80",
+
+    "Wireless Headphones":
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80",
+
+    "Wireless Mouse":
+        "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=600&q=80"
+
+};
+
+
+
+/* =========================
+   LOAD WISHLIST
+========================= */
+
+function loadWishlist() {
+
+    const container =
+        document.getElementById(
+            "wishlistContainer"
+        );
+
+
+    let wishlist = [];
+
+
+    try {
+
+        const savedWishlist =
+            localStorage.getItem(
+                "ramyaWishlist"
+            );
+
+
+        if (savedWishlist) {
+
+            wishlist =
+                JSON.parse(
+                    savedWishlist
+                );
+
+        }
+
+    }
+    catch (error) {
+
+        wishlist = [];
+
+    }
+
+
+
+    /* EMPTY WISHLIST */
+
+    if (wishlist.length === 0) {
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                <h2>
+                    ❤️ Your Wishlist is Empty
+                </h2>
+
+                <p>
+                    Add products you love to your wishlist.
+                </p>
+
+                <a
+                    href="index.html"
+                    class="home-btn"
+                >
+                    🛍️ Continue Shopping
+                </a>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+
+    /* DISPLAY PRODUCTS */
+
+    container.innerHTML = `
+
+        <div class="wishlist-container">
+
+            ${
+                wishlist.map(
+                    (product, index) => {
+
+                        const image =
+                            productImages[
+                                product.name
+                            ]
+                            ||
+                            "https://via.placeholder.com/600x400?text=Ramya+Mart";
+
+
+                        return `
+
+                            <div class="wishlist-card">
+
+                                <img
+                                    src="${image}"
+                                    alt="${product.name}"
+                                >
+
+
+                                <h2>
+                                    ${product.name}
+                                </h2>
+
+
+                                <div class="brand">
+
+                                    Brand:
+                                    ${
+                                        product.brand
+                                        ||
+                                        "N/A"
+                                    }
+
+                                </div>
+
+
+                                <div class="price">
+
+                                    ₹${Number(
+                                        product.price
+                                    ).toLocaleString(
+                                        "en-IN"
+                                    )}
+
+                                </div>
+
+
+                                <div class="description">
+
+                                    ${
+                                        product.description
+                                        ||
+                                        "No description available."
+                                    }
+
+                                </div>
+
+
+                                <button
+                                    class="cart-btn"
+                                    onclick="addToCart(${index})"
+                                >
+                                    🛒 Add to Cart
+                                </button>
+
+
+                                <button
+                                    class="buy-btn"
+                                    onclick="buyNow(${index})"
+                                >
+                                    🛍️ Buy Now
+                                </button>
+
+
+                                <button
+                                    class="remove-btn"
+                                    onclick="removeFromWishlist(${index})"
+                                >
+                                    ❌ Remove
+                                </button>
+
+                            </div>
+
+                        `;
+
+                    }
+                ).join("")
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+
+/* =========================
+   ADD TO CART
+========================= */
+
+function addToCart(index) {
+
+    let wishlist =
+        JSON.parse(
+            localStorage.getItem(
+                "ramyaWishlist"
+            )
+        ) || [];
+
+
+    const product =
+        wishlist[index];
+
+
+    if (!product) {
+
+        return;
+
+    }
+
+
+    let cart =
+        JSON.parse(
+            localStorage.getItem(
+                "ramyaCart"
+            )
+        ) || [];
+
+
+    const existingProduct =
+        cart.find(
+            item =>
+                item.id === product.id
+        );
+
+
+    if (existingProduct) {
+
+        existingProduct.quantity++;
+
+    }
+    else {
+
+        cart.push({
+
+            id:
+                product.id,
+
+            name:
+                product.name,
+
+            price:
+                Number(
+                    product.price
+                ),
+
+            quantity: 1
+
+        });
+
+    }
+
+
+    localStorage.setItem(
+
+        "ramyaCart",
+
+        JSON.stringify(cart)
+
+    );
+
+
+    alert(
+        product.name
+        +
+        " added to cart! 🛒"
+    );
+
+}
+
+
+
+/* =========================
+   BUY NOW
+========================= */
+
+function buyNow(index) {
+
+    let wishlist =
+        JSON.parse(
+            localStorage.getItem(
+                "ramyaWishlist"
+            )
+        ) || [];
+
+
+    const product =
+        wishlist[index];
+
+
+    if (!product) {
+
+        return;
+
+    }
+
+
+    const cart = [
+
+        {
+
+            id:
+                product.id,
+
+            name:
+                product.name,
+
+            price:
+                Number(
+                    product.price
+                ),
+
+            quantity: 1
+
+        }
+
+    ];
+
+
+    localStorage.setItem(
+
+        "ramyaCart",
+
+        JSON.stringify(cart)
+
+    );
+
+
+    window.location.href =
+        "index.html#cart";
+
+}
+
+
+
+/* =========================
+   REMOVE FROM WISHLIST
+========================= */
+
+function removeFromWishlist(index) {
+
+    let wishlist =
+        JSON.parse(
+            localStorage.getItem(
+                "ramyaWishlist"
+            )
+        ) || [];
+
+
+    if (!wishlist[index]) {
+
+        return;
+
+    }
+
+
+    const productName =
+        wishlist[index].name;
+
+
+    wishlist.splice(
+        index,
+        1
+    );
+
+
+    localStorage.setItem(
+
+        "ramyaWishlist",
+
+        JSON.stringify(wishlist)
+
+    );
+
+
+    alert(
+
+        productName
+        +
+        " removed from Wishlist! ❌"
+
+    );
+
+
+    loadWishlist();
+
+}
+
+
+
+/* =========================
+   START
+========================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        loadWishlist();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
