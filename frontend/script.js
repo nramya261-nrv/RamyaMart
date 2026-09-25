@@ -82,7 +82,7 @@ async function loadProducts() {
 
         const response =
             await fetch(
-                "http://localhost:8080/api/products"
+                "https://ramyamart-backend.onrender.com/api/products"
             );
 
 
@@ -1145,7 +1145,7 @@ async function placeOrder(event) {
 
             const response =
                 await fetch(
-                    "http://localhost:8080/api/orders",
+                    "https://ramyamart-backend.onrender.com/api/orders",
                     {
 
                         method:
@@ -1308,7 +1308,7 @@ async function registerUser(event) {
 
         const response =
             await fetch(
-                "http://localhost:8080/api/register",
+                "https://ramyamart-backend.onrender.com/api/register",
                 {
 
                     method:
@@ -1400,7 +1400,7 @@ async function loginUser(event) {
 
         const response =
             await fetch(
-                "http://localhost:8080/api/login",
+                "https://ramyamart-backend.onrender.com/api/login",
                 {
 
                     method:
