@@ -23,7 +23,6 @@ public class RamyaMartController {
         this.orderRepository = orderRepository;
     }
 
-
     // =========================
     // HOME
     // =========================
@@ -33,118 +32,69 @@ public class RamyaMartController {
         return "Welcome to Ramya Mart Backend!";
     }
 
-
     // =========================
     // PRODUCTS
     // =========================
 
-    // Get all products
     @GetMapping("/products")
     public List<Product> getProducts() {
-
         return productRepository.findAll();
     }
 
-
-    // Get one product by ID
-    // Used by Product Details page
     @GetMapping("/products/{id}")
-    public Product getProductById(
-            @PathVariable int id) {
-
-        return productRepository
-                .findById(id)
-                .orElse(null);
+    public Product getProductById(@PathVariable int id) {
+        return productRepository.findById(id).orElse(null);
     }
 
-
-    // Add new product
     @PostMapping("/products")
-    public Product addProduct(
-            @RequestBody Product product) {
-
+    public Product addProduct(@RequestBody Product product) {
         return productRepository.save(product);
     }
 
-
-    // Update product
     @PutMapping("/products/{id}")
     public Product updateProduct(
             @PathVariable int id,
             @RequestBody Product product) {
 
         Product existingProduct =
-                productRepository
-                        .findById(id)
-                        .orElse(null);
+                productRepository.findById(id).orElse(null);
 
         if (existingProduct == null) {
             return null;
         }
 
-        existingProduct.setName(
-                product.getName()
-        );
+        existingProduct.setName(product.getName());
+        existingProduct.setBrand(product.getBrand());
+        existingProduct.setCategory(product.getCategory());
+        existingProduct.setDescription(product.getDescription());
+        existingProduct.setPrice(product.getPrice());
+        existingProduct.setStock(product.getStock());
 
-        existingProduct.setBrand(
-                product.getBrand()
-        );
-
-        existingProduct.setCategory(
-                product.getCategory()
-        );
-
-        existingProduct.setDescription(
-                product.getDescription()
-        );
-
-        existingProduct.setPrice(
-                product.getPrice()
-        );
-
-        existingProduct.setStock(
-                product.getStock()
-        );
-
-        return productRepository.save(
-                existingProduct
-        );
+        return productRepository.save(existingProduct);
     }
 
-
-    // Delete product
     @DeleteMapping("/products/{id}")
-    public String deleteProduct(
-            @PathVariable int id) {
+    public String deleteProduct(@PathVariable int id) {
 
         if (productRepository.existsById(id)) {
-
             productRepository.deleteById(id);
-
             return "Product deleted successfully!";
         }
 
         return "Product not found!";
     }
 
-
-
     // =========================
     // REGISTER
     // =========================
 
     @PostMapping("/register")
-    public String register(
-            @RequestBody User user) {
+    public String register(@RequestBody User user) {
 
         User existingUser =
-                userRepository
-                        .findByUsername(
-                                user.getUsername()
-                        );
+                userRepository.findByUsername(user.getUsername());
 
         if (existingUser != null) {
-
             return "Username already exists!";
         }
 
@@ -153,37 +103,19 @@ public class RamyaMartController {
         return "Registration successful!";
     }
 
-
-
     // =========================
     // LOGIN
     // =========================
 
     @PostMapping("/login")
-    public String login(
-            @RequestBody User user) {
+    public String login(@RequestBody User user) {
 
         User existingUser =
-                userRepository
-                        .findByUsername(
-                                user.getUsername()
-                        );
+                userRepository.findByUsername(user.getUsername());
 
-        if (
-                existingUser != null
-                &&
-                existingUser
-                        .getPassword()
-                        .equals(
-                                user.getPassword()
-                        )
-                &&
-                existingUser
-                        .getRole()
-                        .equals(
-                                user.getRole()
-                        )
-        ) {
+        if (existingUser != null
+                && existingUser.getPassword().equals(user.getPassword())
+                && existingUser.getRole().equals(user.getRole())) {
 
             return "Login successful!";
         }
@@ -191,76 +123,50 @@ public class RamyaMartController {
         return "Invalid username, password or role!";
     }
 
-
-
     // =========================
     // USERS
     // =========================
 
     @GetMapping("/users")
     public List<User> getUsers() {
-
         return userRepository.findAll();
     }
-
-
 
     // =========================
     // ORDERS
     // =========================
 
-    // Place order
     @PostMapping("/orders")
-    public Order placeOrder(
-            @RequestBody Order order) {
+    public Order placeOrder(@RequestBody Order order) {
 
-        if (
-                order.getStatus() == null
-                ||
-                order.getStatus().isEmpty()
-        ) {
+        if (order.getStatus() == null
+                || order.getStatus().isEmpty()) {
 
-            order.setStatus(
-                    "Order Placed"
-            );
+            order.setStatus("Order Placed");
         }
 
         return orderRepository.save(order);
     }
 
-
-    // Get all orders
     @GetMapping("/orders")
     public List<Order> getOrders() {
-
         return orderRepository.findAll();
     }
 
-
-    // Get one order by ID
     @GetMapping("/orders/{id}")
-    public Order getOrderById(
-            @PathVariable int id) {
-
-        return orderRepository
-                .findById(id)
-                .orElse(null);
+    public Order getOrderById(@PathVariable int id) {
+        return orderRepository.findById(id).orElse(null);
     }
 
-
-    // Update order status
     @PutMapping("/orders/{id}/status")
     public Order updateOrderStatus(
             @PathVariable int id,
             @RequestParam String status) {
 
         Order order =
-                orderRepository
-                        .findById(id)
-                        .orElse(null);
+                orderRepository.findById(id).orElse(null);
 
         if (order == null) {
-
             return null;
         }
 
@@ -269,19 +175,11 @@ public class RamyaMartController {
         return orderRepository.save(order);
     }
 
-
-    // Delete order
     @DeleteMapping("/orders/{id}")
-    public String deleteOrder(
-            @PathVariable int id) {
+    public String deleteOrder(@PathVariable int id) {
 
-        if (
-                orderRepository
-                        .existsById(id)
-        ) {
-
+        if (orderRepository.existsById(id)) {
             orderRepository.deleteById(id);
-
             return "Order deleted successfully!";
         }
 
