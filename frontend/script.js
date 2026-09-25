@@ -1,3 +1,17 @@
+// =====================================================
+// RAMYA MART - MAIN SCRIPT
+// Frontend + Backend Connected Version
+// =====================================================
+
+// Since frontend and backend are now hosted together,
+// use the same website URL for API requests.
+const API_BASE = "/api";
+
+
+// =====================================================
+// PRODUCT IMAGES
+// =====================================================
+
 const productImages = {
 
     "HP Laptop":
@@ -27,40 +41,36 @@ const productImages = {
 };
 
 
-let allProducts = [];
+// =====================================================
+// GLOBAL VARIABLES
+// =====================================================
 
+let allProducts = [];
 let cart = [];
 
 
-// =====================================
+// =====================================================
 // LOAD CART
-// =====================================
+// =====================================================
 
 try {
 
-    const savedCart =
-        localStorage.getItem("ramyaCart");
+    const savedCart = localStorage.getItem("ramyaCart");
 
     if (savedCart) {
-
         cart = JSON.parse(savedCart);
-
     }
 
-}
-catch (error) {
+} catch (error) {
 
-    console.log(
-        "Cart loading error:",
-        error
-    );
+    console.error("Cart loading error:", error);
 
 }
 
 
-// =====================================
+// =====================================================
 // SAVE CART
-// =====================================
+// =====================================================
 
 function saveCart() {
 
@@ -72,74 +82,58 @@ function saveCart() {
 }
 
 
-// =====================================
+// =====================================================
 // LOAD PRODUCTS
-// =====================================
+// =====================================================
 
 async function loadProducts() {
 
     try {
 
-        const response =
-            await fetch(
-                "https://ramyamart-backend.onrender.com/api/products"
-            );
-
+        const response = await fetch(
+            `${API_BASE}/products`
+        );
 
         if (!response.ok) {
 
             throw new Error(
-                "Products could not be loaded"
+                `Products request failed: ${response.status}`
             );
 
         }
 
+        allProducts = await response.json();
 
-        allProducts =
-            await response.json();
-
-
-        displayProducts(
-            allProducts
-        );
-
+        displayProducts(allProducts);
 
         updateCart();
 
-    }
-    catch (error) {
+    } catch (error) {
 
         console.error(
             "Product loading error:",
             error
         );
 
-
         const container =
-            document.querySelector(
-                ".product-container"
-            );
-
+            document.querySelector(".product-container");
 
         if (container) {
 
             container.innerHTML = `
-
                 <div style="
                     text-align:center;
                     padding:30px;
                     color:red;
                 ">
 
-                    Unable to load products.
+                    <h3>Unable to load products.</h3>
 
-                    <br>
-
-                    Please make sure
-                    backend is running.
+                    <p>
+                        Please try again later.
+                    </p>
 
                 </div>
-
             `;
 
         }
@@ -149,35 +143,24 @@ async function loadProducts() {
 }
 
 
-// =====================================
+// =====================================================
 // DISPLAY PRODUCTS
-// =====================================
+// =====================================================
 
 function displayProducts(products) {
 
     const container =
-        document.querySelector(
-            ".product-container"
-        );
-
+        document.querySelector(".product-container");
 
     if (!container) {
-
         return;
-
     }
-
 
     container.innerHTML = "";
 
-
-    if (
-        !products ||
-        products.length === 0
-    ) {
+    if (!products || products.length === 0) {
 
         container.innerHTML = `
-
             <div style="
                 text-align:center;
                 padding:30px;
@@ -187,174 +170,183 @@ function displayProducts(products) {
                 ❌ No products found.
 
             </div>
-
         `;
 
         return;
-
     }
 
 
-    products.forEach(
-        function(product) {
+    products.forEach(function(product) {
 
-            const card =
-                document.createElement(
-                    "div"
-                );
+        const card =
+            document.createElement("div");
 
+        card.className = "product-card";
 
-            card.className =
-                "product-card";
+        card.style.cursor = "pointer";
 
 
-            // =================================
-            // PRODUCT DETAILS CLICK
-            // =================================
+        // =================================================
+        // PRODUCT DETAILS CLICK
+        // =================================================
 
-            card.style.cursor =
-                "pointer";
+        card.addEventListener(
+            "click",
+            function() {
+
+                window.location.href =
+                    "product-details.html?id=" +
+                    product.id;
+
+            }
+        );
 
 
-            card.addEventListener(
+        // =================================================
+        // PRODUCT IMAGE
+        // =================================================
+
+        const image =
+            productImages[product.name] ||
+            "https://placehold.co/500x350?text=Ramya+Mart";
+
+
+        // =================================================
+        // PRODUCT CARD
+        // =================================================
+
+        card.innerHTML = `
+
+            <div class="product-image">
+
+                <img
+                    src="${image}"
+                    alt="${product.name}"
+
+                    style="
+                        width:100%;
+                        height:250px;
+                        object-fit:cover;
+                        border-radius:10px;
+                    "
+                >
+
+            </div>
+
+
+            <span class="discount">
+                Special Offer
+            </span>
+
+
+            <h3>
+                ${product.name}
+            </h3>
+
+
+            <p>
+                ${product.description || ""}
+            </p>
+
+
+            <div class="rating">
+                ⭐⭐⭐⭐⭐
+            </div>
+
+
+            <h4>
+                ₹${Number(product.price).toLocaleString("en-IN")}
+            </h4>
+
+
+            <p>
+                Stock: ${product.stock}
+            </p>
+
+
+            <button
+                class="add-cart-btn"
+                type="button"
+            >
+                🛒 Add to Cart
+            </button>
+
+
+            <button
+                class="buy-btn"
+                type="button"
+            >
+                🛍️ Buy Now
+            </button>
+
+        `;
+
+
+        // =================================================
+        // ADD TO CART BUTTON
+        // =================================================
+
+        const addButton =
+            card.querySelector(".add-cart-btn");
+
+        if (addButton) {
+
+            addButton.addEventListener(
                 "click",
-                function() {
+                function(event) {
 
-                    window.location.href =
-                        "product-details.html?id="
-                        + product.id;
+                    event.stopPropagation();
+
+                    addToCart(product);
 
                 }
             );
 
-
-            const image =
-                productImages[
-                    product.name
-                ]
-                ||
-                "https://via.placeholder.com/500x350?text=Ramya+Mart";
+        }
 
 
-            card.innerHTML = `
+        // =================================================
+        // BUY NOW BUTTON
+        // =================================================
 
-                <div class="product-image">
+        const buyButton =
+            card.querySelector(".buy-btn");
 
-                    <img
-                        src="${image}"
-                        alt="${product.name}"
+        if (buyButton) {
 
-                        style="
-                            width:100%;
-                            height:250px;
-                            object-fit:cover;
-                            border-radius:10px;
-                        "
-                    >
+            buyButton.addEventListener(
+                "click",
+                function(event) {
 
-                </div>
+                    event.stopPropagation();
 
+                    buyNow(product);
 
-                <span class="discount">
-
-                    Special Offer
-
-                </span>
-
-
-                <h3>
-                    ${product.name}
-                </h3>
-
-
-                <p>
-                    ${product.description || ""}
-                </p>
-
-
-                <div class="rating">
-
-                    ⭐⭐⭐⭐⭐
-
-                </div>
-
-
-                <h4>
-
-                    ₹${Number(
-                        product.price
-                    ).toLocaleString("en-IN")}
-
-                </h4>
-
-
-                <p>
-
-                    Stock:
-                    ${product.stock}
-
-                </p>
-
-
-                <button
-                    class="add-cart-btn"
-                    onclick="
-                        event.stopPropagation();
-                        addToCart(
-                            ${JSON.stringify(product)}
-                        );
-                    "
-                >
-
-                    🛒 Add to Cart
-
-                </button>
-
-
-                <button
-                    class="buy-btn"
-                    onclick="
-                        event.stopPropagation();
-                        buyNow(
-                            ${JSON.stringify(product)}
-                        );
-                    "
-                >
-
-                    🛍️ Buy Now
-
-                </button>
-
-            `;
-
-
-            container.appendChild(
-                card
+                }
             );
 
         }
-    );
+
+
+        container.appendChild(card);
+
+    });
 
 }
 
 
-// =====================================
+// =====================================================
 // SEARCH PRODUCTS
-// =====================================
+// =====================================================
 
 function searchProducts() {
 
     const searchInput =
-        document.getElementById(
-            "searchInput"
-        );
-
+        document.getElementById("searchInput");
 
     if (!searchInput) {
 
-        alert(
-            "Search box not found!"
-        );
+        alert("Search box not found!");
 
         return;
 
@@ -369,9 +361,7 @@ function searchProducts() {
 
     if (searchText === "") {
 
-        displayProducts(
-            allProducts
-        );
+        displayProducts(allProducts);
 
         return;
 
@@ -379,77 +369,56 @@ function searchProducts() {
 
 
     const filteredProducts =
-        allProducts.filter(
-            function(product) {
+        allProducts.filter(function(product) {
 
-                const name =
-                    String(
-                        product.name || ""
-                    ).toLowerCase();
-
-
-                const description =
-                    String(
-                        product.description || ""
-                    ).toLowerCase();
+            const name =
+                String(
+                    product.name || ""
+                ).toLowerCase();
 
 
-                const category =
-                    String(
-                        product.category || ""
-                    ).toLowerCase();
+            const description =
+                String(
+                    product.description || ""
+                ).toLowerCase();
 
 
-                const brand =
-                    String(
-                        product.brand || ""
-                    ).toLowerCase();
+            const category =
+                String(
+                    product.category || ""
+                ).toLowerCase();
 
 
-                return (
-
-                    name.includes(
-                        searchText
-                    )
-
-                    ||
-
-                    description.includes(
-                        searchText
-                    )
-
-                    ||
-
-                    category.includes(
-                        searchText
-                    )
-
-                    ||
-
-                    brand.includes(
-                        searchText
-                    )
-
-                );
-
-            }
-        );
+            const brand =
+                String(
+                    product.brand || ""
+                ).toLowerCase();
 
 
-    displayProducts(
-        filteredProducts
-    );
+            return (
+
+                name.includes(searchText) ||
+
+                description.includes(searchText) ||
+
+                category.includes(searchText) ||
+
+                brand.includes(searchText)
+
+            );
+
+        });
 
 
-    if (
-        filteredProducts.length === 0
-    ) {
+    displayProducts(filteredProducts);
+
+
+    if (filteredProducts.length === 0) {
 
         const container =
             document.querySelector(
                 ".product-container"
             );
-
 
         if (container) {
 
@@ -477,10 +446,7 @@ function searchProducts() {
 
 
     const productsSection =
-        document.getElementById(
-            "products"
-        );
-
+        document.getElementById("products");
 
     if (productsSection) {
 
@@ -493,9 +459,9 @@ function searchProducts() {
 }
 
 
-// =====================================
+// =====================================================
 // SEARCH ENTER KEY
-// =====================================
+// =====================================================
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -506,16 +472,13 @@ document.addEventListener(
                 "searchInput"
             );
 
-
         if (searchInput) {
 
             searchInput.addEventListener(
                 "keyup",
                 function(event) {
 
-                    if (
-                        event.key === "Enter"
-                    ) {
+                    if (event.key === "Enter") {
 
                         searchProducts();
 
@@ -530,9 +493,9 @@ document.addEventListener(
 );
 
 
-// =====================================
-// CATEGORY
-// =====================================
+// =====================================================
+// CATEGORY FILTER
+// =====================================================
 
 function showCategory(category) {
 
@@ -540,32 +503,22 @@ function showCategory(category) {
         allProducts.filter(
             function(product) {
 
-                return (
-
-                    String(
-                        product.category || ""
-                    ).toLowerCase()
-
-                    ===
-
-                    category.toLowerCase()
-
-                );
+                return String(
+                    product.category || ""
+                )
+                .toLowerCase()
+                ===
+                category.toLowerCase();
 
             }
         );
 
 
-    displayProducts(
-        filteredProducts
-    );
+    displayProducts(filteredProducts);
 
 
     const productsSection =
-        document.getElementById(
-            "products"
-        );
-
+        document.getElementById("products");
 
     if (productsSection) {
 
@@ -578,9 +531,9 @@ function showCategory(category) {
 }
 
 
-// =====================================
+// =====================================================
 // ADD TO CART
-// =====================================
+// =====================================================
 
 function addToCart(product) {
 
@@ -588,9 +541,7 @@ function addToCart(product) {
         cart.find(
             function(item) {
 
-                return (
-                    item.id === product.id
-                );
+                return item.id === product.id;
 
             }
         );
@@ -600,24 +551,17 @@ function addToCart(product) {
 
         existingProduct.quantity++;
 
-    }
-    else {
+    } else {
 
         cart.push({
 
-            id:
-                product.id,
+            id: product.id,
 
-            name:
-                product.name,
+            name: product.name,
 
-            price:
-                Number(
-                    product.price
-                ),
+            price: Number(product.price),
 
-            quantity:
-                1
+            quantity: 1
 
         });
 
@@ -630,16 +574,16 @@ function addToCart(product) {
 
 
     alert(
-        product.name
-        + " added to your cart! 🛒"
+        product.name +
+        " added to your cart! 🛒"
     );
 
 }
 
 
-// =====================================
+// =====================================================
 // UPDATE CART
-// =====================================
+// =====================================================
 
 function updateCart() {
 
@@ -655,13 +599,8 @@ function updateCart() {
         );
 
 
-    if (
-        !cartItems ||
-        !cartTotal
-    ) {
-
+    if (!cartItems || !cartTotal) {
         return;
-
     }
 
 
@@ -671,17 +610,13 @@ function updateCart() {
     if (cart.length === 0) {
 
         cartItems.innerHTML = `
-
             <p>
                 Your cart is empty.
             </p>
-
         `;
-
 
         cartTotal.innerText =
             "Total: ₹0";
-
 
         return;
 
@@ -695,8 +630,7 @@ function updateCart() {
         function(item, index) {
 
             const itemTotal =
-                Number(item.price)
-                *
+                Number(item.price) *
                 Number(item.quantity);
 
 
@@ -714,11 +648,9 @@ function updateCart() {
                         </strong>
 
                         <p>
-
                             ₹${Number(
                                 item.price
                             ).toLocaleString("en-IN")}
-
                         </p>
 
                     </div>
@@ -727,10 +659,9 @@ function updateCart() {
                     <div>
 
                         <button
+                            type="button"
                             onclick="
-                                decreaseQuantity(
-                                    ${index}
-                                )
+                                decreaseQuantity(${index})
                             "
                         >
                             −
@@ -740,17 +671,14 @@ function updateCart() {
                         <span
                             style="margin:0 10px;"
                         >
-
                             ${item.quantity}
-
                         </span>
 
 
                         <button
+                            type="button"
                             onclick="
-                                increaseQuantity(
-                                    ${index}
-                                )
+                                increaseQuantity(${index})
                             "
                         >
                             +
@@ -769,15 +697,12 @@ function updateCart() {
 
 
                     <button
+                        type="button"
                         onclick="
-                            removeFromCart(
-                                ${index}
-                            )
+                            removeFromCart(${index})
                         "
                     >
-
                         Remove
-
                     </button>
 
                 </div>
@@ -789,25 +714,20 @@ function updateCart() {
 
 
     cartTotal.innerText =
-        "Total: ₹"
-        +
-        total.toLocaleString(
-            "en-IN"
-        );
+        "Total: ₹" +
+        total.toLocaleString("en-IN");
 
 }
 
 
-// =====================================
+// =====================================================
 // INCREASE QUANTITY
-// =====================================
+// =====================================================
 
 function increaseQuantity(index) {
 
     if (!cart[index]) {
-
         return;
-
     }
 
 
@@ -821,32 +741,24 @@ function increaseQuantity(index) {
 }
 
 
-// =====================================
+// =====================================================
 // DECREASE QUANTITY
-// =====================================
+// =====================================================
 
 function decreaseQuantity(index) {
 
     if (!cart[index]) {
-
         return;
-
     }
 
 
-    if (
-        cart[index].quantity > 1
-    ) {
+    if (cart[index].quantity > 1) {
 
         cart[index].quantity--;
 
-    }
-    else {
+    } else {
 
-        cart.splice(
-            index,
-            1
-        );
+        cart.splice(index, 1);
 
     }
 
@@ -858,17 +770,13 @@ function decreaseQuantity(index) {
 }
 
 
-// =====================================
+// =====================================================
 // REMOVE FROM CART
-// =====================================
+// =====================================================
 
 function removeFromCart(index) {
 
-    cart.splice(
-        index,
-        1
-    );
-
+    cart.splice(index, 1);
 
     saveCart();
 
@@ -877,9 +785,9 @@ function removeFromCart(index) {
 }
 
 
-// =====================================
+// =====================================================
 // BUY NOW
-// =====================================
+// =====================================================
 
 function buyNow(product) {
 
@@ -887,19 +795,13 @@ function buyNow(product) {
 
         {
 
-            id:
-                product.id,
+            id: product.id,
 
-            name:
-                product.name,
+            name: product.name,
 
-            price:
-                Number(
-                    product.price
-                ),
+            price: Number(product.price),
 
-            quantity:
-                1
+            quantity: 1
 
         }
 
@@ -912,9 +814,7 @@ function buyNow(product) {
 
 
     const cartSection =
-        document.getElementById(
-            "cart"
-        );
+        document.getElementById("cart");
 
 
     if (cartSection) {
@@ -927,16 +827,16 @@ function buyNow(product) {
 
 
     alert(
-        product.name
-        + " selected for purchase! 🛍️"
+        product.name +
+        " selected for purchase! 🛍️"
     );
 
 }
 
 
-// =====================================
+// =====================================================
 // CHECKOUT
-// =====================================
+// =====================================================
 
 function checkout() {
 
@@ -975,16 +875,14 @@ function checkout() {
 }
 
 
-// =====================================
+// =====================================================
 // PLACE ORDER
-// =====================================
+// =====================================================
 
 async function placeOrder(event) {
 
     if (event) {
-
         event.preventDefault();
-
     }
 
 
@@ -1032,13 +930,9 @@ async function placeOrder(event) {
     if (
 
         !nameElement ||
-
         !phoneElement ||
-
         !addressElement ||
-
         !pincodeElement ||
-
         !paymentElement
 
     ) {
@@ -1075,13 +969,9 @@ async function placeOrder(event) {
     if (
 
         name === "" ||
-
         phone === "" ||
-
         address === "" ||
-
         pincode === "" ||
-
         payment === ""
 
     ) {
@@ -1097,42 +987,27 @@ async function placeOrder(event) {
 
     try {
 
-        for (
-            const item of cart
-        ) {
+        for (const item of cart) {
 
             const order = {
 
-                customerName:
-                    name,
+                customerName: name,
 
-                phone:
-                    phone,
+                phone: phone,
 
-                address:
-                    address,
+                address: address,
 
-                pincode:
-                    pincode,
+                pincode: pincode,
 
-                productName:
-                    item.name,
+                productName: item.name,
 
-                price:
-                    Number(
-                        item.price
-                    ),
+                price: Number(item.price),
 
-                quantity:
-                    Number(
-                        item.quantity
-                    ),
+                quantity: Number(item.quantity),
 
-                paymentMethod:
-                    payment,
+                paymentMethod: payment,
 
-                status:
-                    "Order Placed"
+                status: "Order Placed"
 
             };
 
@@ -1145,11 +1020,10 @@ async function placeOrder(event) {
 
             const response =
                 await fetch(
-                    "https://ramyamart-backend.onrender.com/api/orders",
+                    `${API_BASE}/orders`,
                     {
 
-                        method:
-                            "POST",
+                        method: "POST",
 
                         headers: {
 
@@ -1159,9 +1033,7 @@ async function placeOrder(event) {
                         },
 
                         body:
-                            JSON.stringify(
-                                order
-                            )
+                            JSON.stringify(order)
 
                     }
                 );
@@ -1186,27 +1058,12 @@ async function placeOrder(event) {
             if (!response.ok) {
 
                 alert(
-
-                    "Order Error!\n\n"
-
-                    +
-
-                    "Status: "
-
-                    +
-
-                    response.status
-
-                    +
-
-                    "\n\n"
-
-                    +
-
+                    "Order Error!\n\n" +
+                    "Status: " +
+                    response.status +
+                    "\n\n" +
                     result
-
                 );
-
 
                 return;
 
@@ -1216,18 +1073,12 @@ async function placeOrder(event) {
 
 
         alert(
-
-            "🎉 Order placed successfully!\n\n"
-
-            +
-
+            "🎉 Order placed successfully!\n\n" +
             "Thank you for shopping with Ramya Mart!"
-
         );
 
 
         cart = [];
-
 
         saveCart();
 
@@ -1247,8 +1098,8 @@ async function placeOrder(event) {
         window.location.href =
             "orders.html";
 
-    }
-    catch (error) {
+
+    } catch (error) {
 
         console.error(
             "ORDER ERROR:",
@@ -1257,13 +1108,8 @@ async function placeOrder(event) {
 
 
         alert(
-
-            "Connection Error!\n\n"
-
-            +
-
+            "Connection Error!\n\n" +
             error.message
-
         );
 
     }
@@ -1271,9 +1117,9 @@ async function placeOrder(event) {
 }
 
 
-// =====================================
+// =====================================================
 // REGISTER
-// =====================================
+// =====================================================
 
 async function registerUser(event) {
 
@@ -1308,11 +1154,10 @@ async function registerUser(event) {
 
         const response =
             await fetch(
-                "https://ramyamart-backend.onrender.com/api/register",
+                `${API_BASE}/register`,
                 {
 
-                    method:
-                        "POST",
+                    method: "POST",
 
                     headers: {
 
@@ -1355,10 +1200,14 @@ async function registerUser(event) {
 
         }
 
-    }
-    catch (error) {
 
-        console.error(error);
+    } catch (error) {
+
+        console.error(
+            "Register error:",
+            error
+        );
+
 
         alert(
             "Backend is not connected!"
@@ -1369,9 +1218,9 @@ async function registerUser(event) {
 }
 
 
-// =====================================
+// =====================================================
 // LOGIN
-// =====================================
+// =====================================================
 
 async function loginUser(event) {
 
@@ -1400,11 +1249,10 @@ async function loginUser(event) {
 
         const response =
             await fetch(
-                "https://ramyamart-backend.onrender.com/api/login",
+                `${API_BASE}/login`,
                 {
 
-                    method:
-                        "POST",
+                    method: "POST",
 
                     headers: {
 
@@ -1450,25 +1298,21 @@ async function loginUser(event) {
             );
 
 
-            if (
-                role === "Buyer"
-            ) {
+            if (role === "Buyer") {
 
                 window.location.href =
                     "buyer.html";
 
             }
-            else if (
-                role === "Seller"
-            ) {
+
+            else if (role === "Seller") {
 
                 window.location.href =
                     "seller.html";
 
             }
-            else if (
-                role === "Admin"
-            ) {
+
+            else if (role === "Admin") {
 
                 window.location.href =
                     "admin.html";
@@ -1476,16 +1320,21 @@ async function loginUser(event) {
             }
 
         }
+
         else {
 
             alert(message);
 
         }
 
-    }
-    catch (error) {
 
-        console.error(error);
+    } catch (error) {
+
+        console.error(
+            "Login error:",
+            error
+        );
+
 
         alert(
             "Backend is not connected!"
@@ -1496,9 +1345,9 @@ async function loginUser(event) {
 }
 
 
-// =====================================
+// =====================================================
 // PAGE LOAD
-// =====================================
+// =====================================================
 
 document.addEventListener(
     "DOMContentLoaded",
