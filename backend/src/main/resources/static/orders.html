@@ -160,6 +160,10 @@
 
 <script>
 
+const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? (window.location.port === "8080" ? "/api" : "http://localhost:8080/api")
+    : (window.location.hostname === "ramyamart-backend.onrender.com" ? "/api" : "https://ramyamart-backend.onrender.com/api");
+
 async function loadOrders() {
 
     const container =
@@ -168,7 +172,7 @@ async function loadOrders() {
     try {
 
         const response =
-            await fetch("http://localhost:8080/api/orders");
+            await fetch(`${API_BASE}/orders`);
 
         if (!response.ok) {
             throw new Error("Unable to load orders");

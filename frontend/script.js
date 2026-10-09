@@ -3,9 +3,10 @@
 // Frontend + Backend Connected Version
 // =====================================================
 
-// Since frontend and backend are now hosted together,
-// use the same website URL for API requests.
-const API_BASE = "/api";
+// Support separate frontend hosting on Render, co-hosted backend, and local dev
+const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? (window.location.port === "8080" ? "/api" : "http://localhost:8080/api")
+    : (window.location.hostname === "ramyamart-backend.onrender.com" ? "/api" : "https://ramyamart-backend.onrender.com/api");
 
 
 // =====================================================

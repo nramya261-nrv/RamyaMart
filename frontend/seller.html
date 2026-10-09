@@ -446,6 +446,9 @@
 
 <script>
 
+const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? (window.location.port === "8080" ? "/api" : "http://localhost:8080/api")
+    : (window.location.hostname === "ramyamart-backend.onrender.com" ? "/api" : "https://ramyamart-backend.onrender.com/api");
 
 // =====================================
 // LOAD PRODUCTS
@@ -464,7 +467,7 @@ async function loadProducts() {
 
         const response =
             await fetch(
-                "http://localhost:8080/api/products"
+                `${API_BASE}/products`
             );
 
 
@@ -886,7 +889,7 @@ async function updateProduct(id) {
 
         const response =
             await fetch(
-                "http://localhost:8080/api/products/" + id,
+                `${API_BASE}/products/${id}`,
                 {
 
                     method: "PUT",
@@ -1037,7 +1040,7 @@ async function addProduct() {
 
         const response =
             await fetch(
-                "http://localhost:8080/api/products",
+                `${API_BASE}/products`,
                 {
 
                     method: "POST",
@@ -1160,7 +1163,7 @@ async function deleteProduct(id) {
 
         const response =
             await fetch(
-                "http://localhost:8080/api/products/" + id,
+                `${API_BASE}/products/${id}`,
                 {
 
                     method: "DELETE"

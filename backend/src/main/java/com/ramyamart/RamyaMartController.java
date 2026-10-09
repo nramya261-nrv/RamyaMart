@@ -1,8 +1,14 @@
 package com.ramyamart;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -12,24 +18,55 @@ public class RamyaMartController {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
+    private final DataSource dataSource;
 
     public RamyaMartController(
             UserRepository userRepository,
             ProductRepository productRepository,
-            OrderRepository orderRepository) {
+            OrderRepository orderRepository,
+            DataSource dataSource) {
 
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
+        this.dataSource = dataSource;
     }
 
     // =========================
-    // HOME
+    // HOME & HEALTH
     // =========================
 
     @GetMapping("/home")
     public String home() {
         return "Welcome to Ramya Mart Backend!";
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<Map<String, String>> health() {
+        Map<String, String> status = new HashMap<>();
+        status.put("status", "UP");
+        status.put("application", "Ramya Mart Backend");
+        return ResponseEntity.ok(status);
+    }
+
+    @GetMapping("/db-status")
+    public ResponseEntity<Map<String, Object>> dbStatus() {
+        Map<String, Object> status = new HashMap<>();
+        try (Connection conn = dataSource.getConnection()) {
+            status.put("status", "UP");
+            status.put("database", conn.getMetaData().getDatabaseProductName());
+            status.put("version", conn.getMetaData().getDatabaseProductVersion());
+            status.put("catalog", conn.getCatalog());
+            status.put("productsCount", productRepository.count());
+            status.put("usersCount", userRepository.count());
+            status.put("ordersCount", orderRepository.count());
+            return ResponseEntity.ok(status);
+        } catch (Exception e) {
+            status.put("status", "DOWN");
+            status.put("error", e.getClass().getName());
+            status.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(status);
+        }
     }
 
     // =========================
@@ -115,7 +152,8 @@ public class RamyaMartController {
 
         if (existingUser != null
                 && existingUser.getPassword().equals(user.getPassword())
-                && existingUser.getRole().equals(user.getRole())) {
+                && existingUser.getRole() != null
+                && existingUser.getRole().equalsIgnoreCase(user.getRole())) {
 
             return "Login successful!";
         }
