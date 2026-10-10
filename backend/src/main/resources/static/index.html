@@ -481,6 +481,88 @@
     </footer>
 
 
+    <!-- ================= CHAT BOX WIDGET ================= -->
+
+    <div id="chatWidget" class="chat-widget">
+
+        <!-- Floating Chat Button -->
+        <button
+            id="chatToggleBtn"
+            class="chat-toggle-btn"
+            type="button"
+            onclick="toggleChat()"
+            aria-label="Open Chat Support"
+        >
+            <span class="chat-icon">💬</span>
+            <span>Chat</span>
+            <span class="chat-badge">Support</span>
+        </button>
+
+        <!-- Chat Popup Window -->
+        <div id="chatWindow" class="chat-window" style="display: none;">
+
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <span class="chat-avatar">🛍️</span>
+                    <div>
+                        <h4>Ramya Mart Assistant</h4>
+                        <span class="chat-status">
+                            <span class="status-dot"></span> Online
+                        </span>
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    class="chat-close-btn"
+                    onclick="toggleChat()"
+                    aria-label="Close Chat"
+                >
+                    ✕
+                </button>
+            </div>
+
+            <div id="chatMessages" class="chat-messages">
+                <div class="chat-msg bot-msg">
+                    <div class="msg-bubble">
+                        👋 Hi! Welcome to <strong>Ramya Mart</strong>! How can I assist you with your shopping today?
+                    </div>
+                    <span class="msg-time">Just now</span>
+                </div>
+            </div>
+
+            <!-- Quick Suggestions -->
+            <div class="chat-suggestions">
+                <button type="button" class="suggestion-chip" onclick="sendQuickReply('What products do you have?')">🛍️ Products</button>
+                <button type="button" class="suggestion-chip" onclick="sendQuickReply('Show laptops')">💻 Laptops</button>
+                <button type="button" class="suggestion-chip" onclick="sendQuickReply('Show mobiles')">📱 Mobiles</button>
+                <button type="button" class="suggestion-chip" onclick="sendQuickReply('What payment methods are supported?')">💳 Payments</button>
+                <button type="button" class="suggestion-chip" onclick="sendQuickReply('How do I track my order?')">📦 Order Tracking</button>
+                <button type="button" class="suggestion-chip" onclick="sendQuickReply('Contact customer support')">📞 Support</button>
+            </div>
+
+            <form id="chatForm" class="chat-input-area" onsubmit="handleChatSubmit(event)">
+                <input
+                    type="text"
+                    id="chatInput"
+                    placeholder="Type a message..."
+                    autocomplete="off"
+                    required
+                >
+                <button
+                    type="submit"
+                    id="chatSendBtn"
+                    aria-label="Send message"
+                >
+                    ➤
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+
+
     <!-- ================= JAVASCRIPT ================= -->
 
     <script src="script.js"></script>

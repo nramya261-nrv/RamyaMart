@@ -1347,6 +1347,238 @@ async function loginUser(event) {
 
 
 // =====================================================
+// CHAT SUPPORT WIDGET
+// =====================================================
+
+function toggleChat() {
+
+    const chatWindow =
+        document.getElementById("chatWindow");
+
+    if (!chatWindow) {
+        return;
+    }
+
+    if (
+        chatWindow.style.display === "none"
+        || chatWindow.style.display === ""
+    ) {
+
+        chatWindow.style.display = "flex";
+
+        const input =
+            document.getElementById("chatInput");
+
+        if (input) {
+            input.focus();
+        }
+
+    } else {
+
+        chatWindow.style.display = "none";
+
+    }
+
+}
+
+
+function sendQuickReply(message) {
+
+    const input =
+        document.getElementById("chatInput");
+
+    if (input) {
+
+        input.value = message;
+
+        handleChatSubmit(new Event("submit"));
+
+    }
+
+}
+
+
+async function handleChatSubmit(event) {
+
+    if (event) {
+        event.preventDefault();
+    }
+
+    const input =
+        document.getElementById("chatInput");
+
+    const messagesContainer =
+        document.getElementById("chatMessages");
+
+    if (!input || !messagesContainer) {
+        return;
+    }
+
+    const userText =
+        input.value.trim();
+
+    if (!userText) {
+        return;
+    }
+
+    // Clear input box
+    input.value = "";
+
+    const timeString =
+        new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+
+    // Display user message
+    appendChatMessage(
+        userText,
+        "user-msg",
+        timeString
+    );
+
+    // Show typing dots animation
+    const typingId =
+        "typing-" + Date.now();
+
+    const typingDiv =
+        document.createElement("div");
+
+    typingDiv.id = typingId;
+    typingDiv.className = "chat-msg bot-msg";
+
+    typingDiv.innerHTML = `
+        <div class="msg-bubble typing-indicator">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+        </div>
+    `;
+
+    messagesContainer.appendChild(typingDiv);
+    messagesContainer.scrollTop =
+        messagesContainer.scrollHeight;
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/chat`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: userText
+                    })
+                }
+            );
+
+        // Remove typing indicator
+        const typingElem =
+            document.getElementById(typingId);
+
+        if (typingElem) {
+            typingElem.remove();
+        }
+
+        if (response.ok) {
+
+            const data =
+                await response.json();
+
+            const reply =
+                data.reply ||
+                "Thank you for contacting Ramya Mart!";
+
+            appendChatMessage(
+                reply,
+                "bot-msg",
+                new Date().toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                })
+            );
+
+        } else {
+
+            appendChatMessage(
+                "I am having trouble connecting to support right now. Please call us at +91 98765 43210 or email support@ramyamart.com!",
+                "bot-msg",
+                timeString
+            );
+
+        }
+
+    } catch (err) {
+
+        console.error("Chat error:", err);
+
+        const typingElem =
+            document.getElementById(typingId);
+
+        if (typingElem) {
+            typingElem.remove();
+        }
+
+        appendChatMessage(
+            "We're here to help! You can reach our 24/7 helpline at +91 98765 43210 or email support@ramyamart.com.",
+            "bot-msg",
+            timeString
+        );
+
+    }
+
+}
+
+
+function appendChatMessage(text, className, time) {
+
+    const messagesContainer =
+        document.getElementById("chatMessages");
+
+    if (!messagesContainer) {
+        return;
+    }
+
+    const msgDiv =
+        document.createElement("div");
+
+    msgDiv.className =
+        `chat-msg ${className}`;
+
+    msgDiv.innerHTML = `
+        <div class="msg-bubble">
+            ${escapeHtml(text)}
+        </div>
+        <span class="msg-time">
+            ${time}
+        </span>
+    `;
+
+    messagesContainer.appendChild(msgDiv);
+
+    messagesContainer.scrollTop =
+        messagesContainer.scrollHeight;
+
+}
+
+
+function escapeHtml(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.innerText = text;
+
+    return div.innerHTML;
+
+}
+
+
+// =====================================================
 // PAGE LOAD
 // =====================================================
 
